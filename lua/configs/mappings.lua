@@ -1,0 +1,194 @@
+-- I use arrow keys not hjkl cause I am a fucking weirdo
+
+local map = function(mode, lhs, rhs, opts)
+  opts = opts or {}
+  if opts.noremap == nil then
+    opts.noremap = true
+  end
+  if opts.silent == nil then
+    opts.silent = true
+  end
+  vim.keymap.set(mode, lhs, rhs, opts)
+end
+
+-- Editor remaps/ built in
+
+map("n", "<C-w><S-Left>", "<C-w>H", { desc = "Move split left" })
+map("n", "<C-w><S-Down>", "<C-w>J", { desc = "Move split down" })
+map("n", "<C-w><S-Up>", "<C-w>K", { desc = "Move split up" })
+map("n", "<C-w><S-Right>", "<C-w>L", { desc = "Move split right" })
+
+map("n", "n", "nzzzv", { desc = "Next search result centered" })
+map("n", "N", "Nzzzv", { desc = "Previous search result centered" })
+
+map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "Copy whole file" })
+
+map("n", "<leader><Up>", "O", { desc = "Insert above" })
+map("n", "<leader><Down>", "o", { desc = "Insert below" })
+
+map("n", "<leader>,", "u", { desc = "Undo" })
+map("n", "<leader>.", "<C-r>", { desc = "Redo" })
+
+map("i", ",", ",<C-g>u", { desc = "Insert ',' and break undo sequence" })
+map("i", ".", ".<C-g>u", { desc = "Insert '.' and break undo sequence" })
+map("i", ";", ";<C-g>u", { desc = "Insert ';' and break undo sequence" })
+
+map("v", "p", '"_dP', { desc = "Paste without yanking replaced text" })
+map("n", "x", '"_x', { desc = "Delete character without yanking" })
+map("n", "c", '"_c', { desc = "Change text without yanking" })
+-- map("n", "d", '"_d', { desc = "Delete text without yanking" })
+
+map("n", "<C-z>", "<nop>", { desc = "Disable suspend" })
+map("n", "ZZ", "<nop>", { desc = "Disable accidental save and quit (ZZ)" })
+map("n", "ZQ", "<nop>", { desc = "Disable accidental quit (ZQ)" })
+
+map("n", "s", "<nop>", { desc = "Disable s to avoid accidental edits" })
+
+map("n", "q", "<Nop>", { desc = "Disable recording macro (q)" })
+map("n", "Q", "<Nop>", { desc = "Disable Ex mode (Q)" })
+
+map({ "n", "v" }, "!", "^", { desc = "Jump to first non-blank character of the line" })
+map({ "n", "v" }, "@", "g_", { desc = "Jump to last non-blank character of line" })
+
+map({ "n", "v" }, "<S-Left>", "B", { desc = "Move to the beginning of the word" })
+map({ "n", "v" }, "<S-Right>", "E", { desc = "Move to the end of the word" })
+map("i", "<S-Left>", "<C-o>B", { desc = "Move to the beginning of the word in insert mode" })
+map("i", "<S-Right>", "<C-o>E", { desc = "Move to the end of the word in insert mode" })
+
+map({ "n", "v" }, "<C-Left>", "b", { desc = "Move to the beginning of the word" })
+map({ "n", "v" }, "<C-Right>", "e", { desc = "Move to the end of the word" })
+map("i", "<C-Left>", "<C-o>b", { desc = "Move to the beginning of the word in insert mode" })
+map("i", "<C-Right>", "<C-o>e", { desc = "Move to the end of the word in insert mode" })
+
+map("v", "<S-Up>", "{zz", { desc = "Jump to previous paragraph (centered)" })
+map("v", "<S-Down>", "}zz", { desc = "Jump to next paragraph (centered)" })
+
+map("n", "<S-Up>", "<C-u>zz", { desc = "Scroll half a page up and center" })
+map("n", "<S-Down>", "<C-d>zz", { desc = "Scroll half a page down and center" })
+map("i", "<S-Up>", "<C-o><C-u><C-o>zz", { desc = "Scroll half a page up and center in insert mode" })
+map("i", "<S-Down>", "<C-o><C-d><C-o>zz", { desc = "Scroll half a page down and center in insert mode" })
+
+map({ "n", "v" }, "<C-Down>", "<C-e>", { desc = "Scroll window down one line" })
+map({ "n", "v" }, "<C-Up>", "<C-y>", { desc = "Scroll window up one line" })
+map("i", "<C-Down>", "<C-o><C-e>", { desc = "Scroll window down one line in insert mode" })
+map("i", "<C-Up>", "<C-o><C-y>", { desc = "Scroll window up one line in insert mode" })
+
+map("n", "*", [[<Cmd>let @/ = '\<'.expand('<cword>').'\>'<CR>:set hlsearch<CR>]], { desc = "Highlight word (no jump)" })
+map("n", "#", [[<Cmd>let @/ = '\<'.expand('<cword>').'\>'<CR>:set hlsearch<CR>]], { desc = "Highlight word (no jump)" })
+map(
+  "v",
+  "*",
+  [[y<Cmd>let @/ = '\<' . escape(@", '/\') . '\>'<CR>:set hlsearch<CR>]],
+  { desc = "Highlight selection (no jump)" }
+)
+map(
+  "v",
+  "#",
+  [[y<Cmd>let @/ = '\<' . escape(@", '/\') . '\>'<CR>:set hlsearch<CR>]],
+  { desc = "Highlight selection (no jump)" }
+)
+
+map("n", "<S-j>", ":resize +2<CR>", { desc = "Increase window height" })
+map("n", "<S-k>", ":resize -2<CR>", { desc = "Decrease window height" })
+map("n", "<S-h>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
+map("n", "<S-l>", ":vertical resize +2<CR>", { desc = "Increase window width" })
+
+map("v", "<", "<gv", { desc = "Indent left and reselect" })
+map("v", ">", ">gv", { desc = "Indent right and reselect" })
+
+map("n", "<C-s>", "<cmd>write<cr>", { desc = "Save file" })
+map("v", "<C-s>", "<cmd>write<cr>", { desc = "Save file" })
+map("i", "<C-s>", "<C-o>:write<CR>", { desc = "Save file" })
+
+map("n", "<Esc>", "<cmd>noh<CR>", { desc = "Clear highlights" })
+
+map("t", "<Esc>", "<C-\\><C-N>", { desc = "Escape terminal mode" })
+
+-- Open selected text as URL (portable)
+local function open_url_portable(url)
+  url = vim.fn.trim(url or "")
+  if url == "" then
+    vim.notify("No URL selected", vim.log.levels.WARN)
+    return
+  end
+  local cmd
+  if vim.fn.has "mac" == 1 then
+    cmd = { "open", url }
+  elseif vim.fn.has "win32" == 1 then
+    cmd = { "cmd.exe", "/c", "start", "", url }
+  else
+    cmd = { "xdg-open", url }
+  end
+  vim.fn.jobstart(cmd, { detach = true })
+end
+map("v", "gx", function()
+  vim.cmd [[normal! "vy]]
+  local url = vim.fn.getreg '"'
+  open_url_portable(url)
+end, { desc = "Open selected text as URL" })
+
+-- Comment
+map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
+map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
+
+-- NVCHAD
+map("n", "<leader>nc", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
+map("n", "<leader>nt", function()
+  require("nvchad.themes").open()
+end, { desc = "telescope nvchad themes" })
+
+-- Toggleable terminal
+map({ "n", "t" }, "<A-d>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "ftoggleTerm",
+  }
+end, { desc = "Toggle floating terminal" })
+
+-- Tabs
+map("n", "<leader>tn", "<cmd>tabnew<CR>", { desc = "New tab" })
+map("n", "<leader>tX", "<cmd>tabonly<CR>", { desc = "Close all other tabs" })
+map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close tab" })
+map("n", "<leader>t<Right>", "<cmd>tabnext<CR>", { desc = "Next tab" })
+map("n", "<leader>t<Left>", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
+
+-- Buffers (tabufline)
+map("n", "<leader>b", "<cmd>enew<CR>", { desc = "Buffer new" })
+
+map({ "n", "v" }, "<leader><Right>", function()
+  require("nvchad.tabufline").next()
+end, { desc = "Buffer goto next" })
+
+map({ "n", "v" }, "<leader><Left>", function()
+  require("nvchad.tabufline").prev()
+end, { desc = "Buffer goto prev" })
+
+map("n", "<leader>x", function()
+  require("nvchad.tabufline").close_buffer()
+end, { desc = "Buffer close" })
+
+local function close_all_buffers_but_current()
+  local current_buf = vim.api.nvim_get_current_buf()
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    if bufnr ~= current_buf and vim.bo[bufnr].buflisted and vim.api.nvim_buf_is_loaded(bufnr) then
+      vim.api.nvim_buf_delete(bufnr, { force = false })
+    end
+  end
+end
+map("n", "<leader>X", close_all_buffers_but_current, { desc = "Close all buffers except current" })
+
+-- Just in case I use vim properly (unlikely)
+
+map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
+map("n", "<C-j>", "<C-w>j", { desc = "Move to below window" })
+map("n", "<C-k>", "<C-w>k", { desc = "Move to above window" })
+map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+
+map("n", "<A-j>", ":m .+1<CR>==", { desc = "Move current line down" })
+map("n", "<A-k>", ":m .-2<CR>==", { desc = "Move current line up" })
+map("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move current line down (insert mode)" })
+map("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move current line up (insert mode)" })
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down" })
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up" })
+
+map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
