@@ -1,14 +1,9 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  event = { "BufReadPost", "BufNewFile" },
-  cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+  branch = "master",
+  lazy = false,
   build = ":TSUpdate",
   opts = function()
-    pcall(function()
-      dofile(vim.g.base46_cache .. "syntax")
-      dofile(vim.g.base46_cache .. "treesitter")
-    end)
-
     return {
       ensure_installed = {
         "luadoc",
@@ -36,11 +31,11 @@ return {
         "json",
         "xml",
         "hyprlang",
+        "query",
       },
 
       highlight = {
         enable = true,
-        use_languagetree = true,
         additional_vim_regex_highlighting = false,
       },
 

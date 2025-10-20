@@ -1,18 +1,12 @@
 return {
   "RRethy/vim-illuminate",
   event = "BufRead",
+  enabled = true,
   config = function()
     require("illuminate").configure {
-      providers = { "lsp", "treesitter", "regex" },
+      providers = { "lsp", "treesitter" },
       delay = 50,
       under_cursor = true,
-
-      large_file_cutoff = 5000,
-      large_file_overrides = {
-        under_cursor = false,
-        providers = { "regex" },
-        min_count_to_highlight = 2,
-      },
 
       filetypes_denylist = {
         "NvimTree",
@@ -24,6 +18,7 @@ return {
         "dirbuf",
         "fugitive",
         "copilot-chat",
+        "css",
       },
 
       modes_denylist = { "i" },
@@ -37,7 +32,6 @@ return {
 
     map("n", "]r", require("illuminate").goto_next_reference, { desc = "Next Reference" })
     map("n", "[r", require("illuminate").goto_prev_reference, { desc = "Prev Reference" })
-    map("o", "ir", require("illuminate").textobj_select, { desc = "Select Reference" })
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "terminal",
