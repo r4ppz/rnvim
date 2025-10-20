@@ -26,7 +26,6 @@ return {
     {
       "mason-org/mason.nvim",
       opts = function()
-        dofile(vim.g.base46_cache .. "mason")
         return {
           PATH = "skip",
           ui = {
@@ -55,7 +54,7 @@ return {
   },
 
   config = function()
-    local lsp_config = require "configs.lsp"
+    local server_configs = require "configs.servers"
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
     capabilities.textDocument.completion.completionItem =
       vim.tbl_deep_extend("force", capabilities.textDocument.completion.completionItem or {}, {
@@ -83,24 +82,12 @@ return {
 
     -- LSP setup function
     local function setup()
-      dofile(vim.g.base46_cache .. "lsp")
-      -- require("nvchad.lsp").diagnostic_config()
-
-      -- vim.diagnostic.config {
-      --   virtual_text = false,
-      --   underline = true,
-      --   signs = true,
-      --   update_in_insert = false,
-      --   severity_sort = true,
-      -- }
-
-      -- Default config for all servers
       vim.lsp.config("*", {
         capabilities = capabilities,
         root_markers = { ".git", ".hg" },
       })
 
-      lsp_config.setup(capabilities)
+      server_configs.setup(capabilities)
 
       -- Enable all listed servers
       for _, s in ipairs(servers) do
