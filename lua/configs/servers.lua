@@ -12,7 +12,6 @@ function M.setup(capabilities)
       "stylua.toml",
       "selene.toml",
       "selene.yml",
-      ".git",
     },
     settings = {
       Lua = {
@@ -26,7 +25,10 @@ function M.setup(capabilities)
             vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy",
             "${3rd}/luv/library",
           },
+          maxPreload = 1000,
+          preloadFileSize = 1000,
         },
+        telemetry = { enable = false },
       },
     },
   })
@@ -34,7 +36,7 @@ function M.setup(capabilities)
   -- VTS LSP
   vim.lsp.config("vtsls", {
     filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-    root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+    root_markers = { "package.json", "tsconfig.json", "jsconfig.json" },
     capabilities = capabilities,
     settings = {
       vtsls = {
@@ -42,52 +44,56 @@ function M.setup(capabilities)
         experimental = {
           completion = {
             enableServerSideFuzzyMatch = true,
-            entriesLimit = 256,
+            entriesLimit = 128,
           },
         },
       },
       typescript = {
-        tsserver = { maxTsServerMemory = 4096 },
+        tsserver = {
+          maxTsServerMemory = 2048,
+        },
         format = { enable = false },
         suggest = {
-          diagnostics = true,
-          completeFunctionCalls = true,
-          includeCompletionsForModuleExports = true,
-          includeCompletionsWithInsertText = true,
+          completions = {
+            completeFunctionCalls = true,
+          },
         },
         inlayHints = {
-          includeInlayParameterNameHints = "all",
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayVariableTypeHints = true,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayFunctionLikeReturnTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
+          includeInlayParameterNameHints = false,
+          includeInlayFunctionParameterTypeHints = false,
+          includeInlayVariableTypeHints = false,
+          includeInlayPropertyDeclarationTypeHints = false,
+          includeInlayFunctionLikeReturnTypeHints = false,
+          includeInlayEnumMemberValueHints = false,
         },
         preferences = {
+          includeCompletionsForModuleExports = true,
+          includeCompletionsWithInsertText = true,
           importModuleSpecifier = "relative",
-          includePackageJsonAutoImports = "on",
+          includePackageJsonAutoImports = "auto",
           quotePreference = "auto",
         },
       },
       javascript = {
         format = { enable = false },
         suggest = {
-          diagnostics = true,
-          completeFunctionCalls = true,
-          includeCompletionsForModuleExports = true,
-          includeCompletionsWithInsertText = true,
+          completions = {
+            completeFunctionCalls = true,
+          },
         },
         inlayHints = {
-          includeInlayParameterNameHints = "all",
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayVariableTypeHints = true,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayFunctionLikeReturnTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
+          includeInlayParameterNameHints = false,
+          includeInlayFunctionParameterTypeHints = false,
+          includeInlayVariableTypeHints = false,
+          includeInlayPropertyDeclarationTypeHints = false,
+          includeInlayFunctionLikeReturnTypeHints = false,
+          includeInlayEnumMemberValueHints = false,
         },
         preferences = {
+          includeCompletionsForModuleExports = true,
+          includeCompletionsWithInsertText = true,
           importModuleSpecifier = "relative",
-          includePackageJsonAutoImports = "on",
+          includePackageJsonAutoImports = "auto",
           quotePreference = "auto",
         },
       },
@@ -103,7 +109,7 @@ function M.setup(capabilities)
 
   vim.lsp.config("jdtls", {
     capabilities = jdtls_capabilities,
-    root_markers = { "pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "gradlew", "mvnw", ".git" },
+    root_markers = { "pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "gradlew", "mvnw" },
     on_attach = function(client)
       -- Forcefully disable semantic tokens if server ignores capability
       client.server_capabilities.semanticTokensProvider = nil
@@ -111,8 +117,16 @@ function M.setup(capabilities)
     settings = {
       java = {
         home = "/usr/lib/jvm/java-21-openjdk/",
+        configuration = {
+          runtimes = {
+            {
+              name = "JavaSE-21",
+              path = "/usr/lib/jvm/java-21-openjdk/",
+            },
+          },
+        },
         completion = {
-          importOrder = { "java", "javax", "com", "org" },
+          importOrder = { "java", "javax", "com", "org", "lombok" },
           favoriteStaticMembers = {
             "org.junit.jupiter.api.Assertions.*",
             "org.mockito.Mockito.*",
@@ -129,21 +143,58 @@ function M.setup(capabilities)
         project = {
           referencedLibraries = {
             "lib/**/*.jar",
+            "./out/**/*.jar",
+          },
+          importPrompt = {
+            enabled = true,
           },
         },
         maven = {
           downloadSources = true,
+          updateSnapshots = true,
         },
         gradle = {
+          version = "8.5",
           wrapper = {
             enabled = true,
           },
+          offline = true,
         },
-        runtimes = {
-          {
-            name = "JavaSE-21",
-            path = "/usr/lib/jvm/java-21-openjdk/",
+        autobuild = {
+          enabled = true,
+        },
+        import = {
+          maven = {
+            enabled = true,
           },
+          gradle = {
+            enabled = true,
+          },
+          externalAnnotation = {
+            enabled = true,
+          },
+        },
+        saveActions = {
+          organizeImports = true,
+        },
+        format = {
+          enabled = true,
+          settings = {
+            url = vim.fn.stdpath "config" .. "/java-formatter.xml",
+            profile = "GoogleStyle",
+          },
+        },
+        sources = {
+          organizeImports = {
+            starThreshold = 999,
+            staticStarThreshold = 999,
+          },
+        },
+        typeHierarchy = {
+          multipleInheritance = true,
+        },
+        contentProvider = {
+          preferred = "fernflower",
         },
       },
     },
@@ -153,17 +204,43 @@ function M.setup(capabilities)
   vim.lsp.config("cssmodules_ls", {
     capabilities = capabilities,
     filetypes = { "typescriptreact", "javascriptreact", "tsx", "jsx" },
+    settings = {
+      css = {
+        validate = true,
+        lint = {
+          unknownAtRules = "ignore",
+        },
+      },
+      scss = {
+        validate = true,
+        lint = {
+          unknownAtRules = "ignore",
+        },
+      },
+      less = {
+        validate = true,
+        lint = {
+          unknownAtRules = "ignore",
+        },
+      },
+    },
   })
 
   -- CSS LSP
   vim.lsp.config("cssls", {
     capabilities = capabilities,
-    root_markers = { "package.json", ".git" },
+    root_markers = { "package.json" },
     settings = {
       css = { validate = true, lint = { unknownAtRules = "ignore" } },
       scss = { validate = true, lint = { unknownAtRules = "ignore" } },
       less = { validate = true, lint = { unknownAtRules = "ignore" } },
     },
+  })
+
+  -- CSS Variables
+  vim.lsp.config("css_variables", {
+    capabilities = capabilities,
+    filetypes = { "css", "scss", "sass", "less", "pcss", "typescriptreact", "javascriptreact" },
   })
 
   -- Tailwind CSS
@@ -179,7 +256,6 @@ function M.setup(capabilities)
       "postcss.config.mjs",
       "postcss.config.ts",
       "package.json",
-      ".git",
     },
   })
 
@@ -192,6 +268,8 @@ function M.setup(capabilities)
       "typescriptreact",
       "css",
       "scss",
+      "vue",
+      "svelte",
     },
   })
 
@@ -209,7 +287,6 @@ function M.setup(capabilities)
       "eslint.config.mjs",
       "eslint.config.cjs",
       "package.json",
-      ".git",
     },
     settings = {
       experimental = {
@@ -227,9 +304,13 @@ function M.setup(capabilities)
         },
       },
     },
+    on_attach = function(client, _)
+      -- Reduce diagnostics frequency for better performance
+      client.server_capabilities.documentFormattingProvider = false
+    end,
   })
 
-  -- Python LSP
+  -- Python LSP - optimized
   vim.lsp.config("pyright", {
     capabilities = capabilities,
     root_markers = {
@@ -239,20 +320,41 @@ function M.setup(capabilities)
       "requirements.txt",
       "Pipfile",
       "pyrightconfig.json",
-      ".git",
+    },
+    settings = {
+      python = {
+        analysis = {
+          autoImportCompletions = true,
+          autoSearchPaths = true,
+          diagnosticMode = "openFilesOnly",
+          typeCheckingMode = "basic",
+        },
+      },
     },
   })
 
   -- Rust LSP
   vim.lsp.config("rust_analyzer", {
     capabilities = capabilities,
-    root_markers = { "Cargo.toml", "rust-project.json", ".git" },
-  })
-
-  -- Bash LSP
-  vim.lsp.config("bashls", {
-    capabilities = capabilities,
-    root_markers = { ".git" },
+    root_markers = { "Cargo.toml", "rust-project.json" },
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          loadOutDirsFromCheck = true,
+          runBuildScripts = true,
+        },
+        procMacro = {
+          enable = true,
+          attributes = {
+            enable = true,
+          },
+        },
+        -- Limit memory usage
+        checkOnSave = {
+          command = "check",
+        },
+      },
+    },
   })
 
   -- C/C++ LSP
@@ -265,38 +367,65 @@ function M.setup(capabilities)
       "compile_commands.json",
       "compile_flags.txt",
       "configure.ac",
-      ".git",
+    },
+    cmd = {
+      "clangd",
+      "--background-index",
+      "--clang-tidy",
+      "--header-insertion=iwyu",
+      "--completion-style=detailed",
+      "--function-arg-placeholders",
+      "--folding-ranges",
     },
   })
 
   -- HTML LSP
   vim.lsp.config("html", {
     capabilities = capabilities,
-    root_markers = { "package.json", ".git" },
+    root_markers = { "package.json" },
+    settings = {
+      html = {
+        format = { enable = false },
+        suggest = {
+          element = {
+            wrap = {
+              snippets = {},
+            },
+          },
+        },
+      },
+    },
   })
 
   -- JSON LSP
   vim.lsp.config("jsonls", {
     capabilities = capabilities,
-    root_markers = { "package.json", ".git" },
+    root_markers = { "package.json" },
+    settings = {
+      json = {
+        format = { enable = false },
+        schemas = {},
+        validate = { enable = true },
+      },
+    },
   })
 
   -- Markdown LSP
   vim.lsp.config("marksman", {
     capabilities = capabilities,
-    root_markers = { ".marksman.toml", ".git" },
+    root_markers = { ".marksman.toml" },
   })
 
   -- XML LSP
   vim.lsp.config("lemminx", {
     capabilities = capabilities,
-    root_markers = { "pom.xml", ".git" },
+    root_markers = { "pom.xml" },
   })
 
   -- Hyprland LSP
   vim.lsp.config("hyprls", {
     capabilities = capabilities,
-    root_markers = { "hyprland.conf", ".git" },
+    root_markers = { "hyprland.conf" },
   })
 end
 

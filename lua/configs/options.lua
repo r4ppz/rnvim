@@ -2,10 +2,6 @@ local opt = vim.opt
 local o = vim.o
 local g = vim.g
 
-vim.api.nvim_set_hl(0, "LspReferenceText", { underline = true })
-vim.api.nvim_set_hl(0, "LspReferenceRead", { underline = true })
-vim.api.nvim_set_hl(0, "LspReferenceWrite", { underline = true })
-
 o.autoread = true
 
 o.relativenumber = false
@@ -54,7 +50,16 @@ o.timeoutlen = 400
 o.undofile = true
 
 -- interval for writing swap file to disk, also used by gitsigns
-o.updatetime = 250
+o.updatetime = 250          -- Reduce from default 4000ms to 250ms for quicker updates
+o.lazyredraw = true         -- Not redraw while running macros
+o.ttyfast = true            -- Assume fast terminal
+o.fdo = "search,tag,insert,undo"  -- Reduce file I/O
+o.termguicolors = true      -- Use true colors
+o.inccommand = "nosplit"    -- Instead of "split" to avoid creating splits during search
+o.hidden = true             -- Allow more flexible buffer handling
+o.belloff = "all"           -- Turn off bell completely
+o.cmdheight = 1             -- Minimal command line height
+o.synmaxcol = 200           -- Limit syntax highlighting to 200 columns for performance
 
 -- go to previous/next line with h,l,left arrow and right arrow
 -- when cursor reaches end/beginning of line

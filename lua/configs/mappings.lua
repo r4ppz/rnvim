@@ -2,24 +2,15 @@
 
 local map = require "utils.map"
 
-map("n", "[m", "''", { desc = "Go to previous jump (line-wise)" })
-map("n", "]m", "``", { desc = "Go to previous jump (exact position)" })
-
-local marks = { "A", "B", "C", "D", "E" }
-for i, mark in ipairs(marks) do
-  map("n", "m" .. i, "m" .. mark, { desc = "Set global mark " .. mark })
-  map("n", "g" .. i, "`" .. mark, { desc = "Exact jump to global mark " .. mark })
-end
-
 map("n", "<C-w><S-Left>", "<C-w>H", { desc = "Move split left" })
 map("n", "<C-w><S-Down>", "<C-w>J", { desc = "Move split down" })
 map("n", "<C-w><S-Up>", "<C-w>K", { desc = "Move split up" })
 map("n", "<C-w><S-Right>", "<C-w>L", { desc = "Move split right" })
 
-map("n", "<Tab>", "nzzzv", { desc = "Next search result centered" })
-map("n", "<S-Tab>", "Nzzzv", { desc = "Previous search result centered" })
-map("n", "n", "nzzzv", { desc = "Next search result centered" })
-map("n", "N", "Nzzzv", { desc = "Previous search result centered" })
+map("n", "<Tab>", "nzz", { desc = "Next search result centered" })
+map("n", "<S-Tab>", "Nzz", { desc = "Previous search result centered" })
+map("n", "n", "nzz", { desc = "Next search result centered" })
+map("n", "N", "Nzz", { desc = "Previous search result centered" })
 
 map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "Copy whole file" })
 
@@ -104,29 +95,6 @@ map("n", "<Esc>", "<cmd>noh<CR>", { desc = "Clear highlights" })
 
 map("t", "<C-q>", "<C-\\><C-N>", { desc = "Escape terminal mode" })
 
--- Open selected text as URL (portable)
-local function open_url_portable(url)
-  url = vim.fn.trim(url or "")
-  if url == "" then
-    vim.notify("No URL selected", vim.log.levels.WARN)
-    return
-  end
-  local cmd
-  if vim.fn.has "mac" == 1 then
-    cmd = { "open", url }
-  elseif vim.fn.has "win32" == 1 then
-    cmd = { "cmd.exe", "/c", "start", "", url }
-  else
-    cmd = { "xdg-open", url }
-  end
-  vim.fn.jobstart(cmd, { detach = true })
-end
-map("v", "gx", function()
-  vim.cmd [[normal! "vy]]
-  local url = vim.fn.getreg '"'
-  open_url_portable(url)
-end, { desc = "Open selected text as URL" })
-
 -- Comment
 map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
 map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
@@ -137,20 +105,19 @@ map("n", "<leader>nt", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })
 
--- Toggleable terminal
-map({ "n", "t" }, "<A-d>", function()
-  require("nvchad.term").toggle {
-    pos = "float",
-    id = "ftoggleTerm",
-  }
-end, { desc = "Toggle floating terminal" })
-
 -- Tabs
 map("n", "<leader>tn", "<cmd>tabnew<CR>", { desc = "New tab" })
 map("n", "<leader>tX", "<cmd>tabonly<CR>", { desc = "Close all other tabs" })
 map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close tab" })
 map("n", "<leader>t<Right>", "<cmd>tabnext<CR>", { desc = "Next tab" })
 map("n", "<leader>t<Left>", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
+
+-- Marks
+local marks = { "A", "B", "C", "D", "E" }
+for i, mark in ipairs(marks) do
+  map("n", "m" .. i, "m" .. mark, { desc = "Set global mark " .. mark })
+  map("n", "g" .. i, "`" .. mark, { desc = "Exact jump to global mark " .. mark })
+end
 
 -- Buffers (tabufline)
 map("n", "<leader>b", "<cmd>enew<CR>", { desc = "Buffer new" })
@@ -170,6 +137,44 @@ end, { desc = "Buffer close" })
 map("n", "<leader>X", function()
   require("nvchad.tabufline").closeAllBufs(false)
 end, { desc = "Close all buffers except current" })
+
+-- Toggleable terminal
+map({ "n", "t" }, "<A-d>", function()
+  require("nvchad.term").toggle {
+    pos = "float",
+    id = "generic",
+  }
+end, { desc = "Toggle generic terminal" })
+
+-- Open selected text as URL (portable)
+local function create_open_url_function()
+  local is_mac = vim.fn.has "mac" == 1
+  local is_win = vim.fn.has "win32" == 1
+
+  return function(url)
+    url = vim.fn.trim(url or "")
+    if url == "" then
+      vim.notify("No URL selected", vim.log.levels.WARN)
+      return
+    end
+    local cmd
+    if is_mac then
+      cmd = { "open", url }
+    elseif is_win then
+      cmd = { "cmd.exe", "/c", "start", "", url }
+    else
+      cmd = { "xdg-open", url }
+    end
+    vim.fn.jobstart(cmd, { detach = true })
+  end
+end
+
+local open_url_portable = create_open_url_function()
+map("v", "gx", function()
+  vim.cmd [[normal! "vy]]
+  local url = vim.fn.getreg '"'
+  open_url_portable(url)
+end, { desc = "Open selected text as URL" })
 
 -- Just in case I use vim properly (unlikely)
 

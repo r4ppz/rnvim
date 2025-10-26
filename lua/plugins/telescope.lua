@@ -35,6 +35,32 @@ return {
             height = 0.6,
           },
         },
+        find_files = {
+          hidden = true,
+          follow_symlinks = false,
+        },
+        live_grep = {
+          additional_args = function()
+            return {
+              "--smart-case",
+              "--hidden",
+              "--glob=!**/.git/*",
+              "--glob=!**/node_modules/*",
+              "--glob=!**/.cache/*",
+            }
+          end,
+        },
+        grep_string = {
+          additional_args = function()
+            return {
+              "--smart-case",
+              "--hidden",
+              "--glob=!**/.git/*",
+              "--glob=!**/node_modules/*",
+              "--glob=!**/.cache/*",
+            }
+          end,
+        },
       },
 
       defaults = {
@@ -44,14 +70,70 @@ return {
         sorting_strategy = "ascending",
         initial_mode = "insert",
         path_display = { "truncate" },
+
+        file_ignore_patterns = {
+          "vendor/.*",
+          "%.git/.*",
+          "node_modules/.*",
+          "%.cache/.*",
+          "%.npm/.*",
+          "__pycache__/.*",
+          "%.pytest_cache/.*",
+          "%.tox/.*",
+          "%.coverage.*",
+          "coverage/.*",
+          "dist/.*",
+          "build/.*",
+          "target/.*",
+          "%.stack-work/.*",
+          "%.hg/.*",
+          "%.svn/.*",
+          "%.DS_Store",
+          "Thumbs%.db",
+          "tags",
+        },
+
         layout_config = {
           horizontal = {
             prompt_position = "top",
             preview_width = 0.55,
+            width = 0.87,
+            height = 0.80,
           },
-          width = 0.87,
-          height = 0.80,
+          vertical = {
+            mirror = false,
+            width = 0.95,
+            height = 0.95,
+          },
+          center = {
+            width = 0.4,
+            height = 0.4,
+          },
         },
+
+        -- Performance related settings
+        vimgrep_arguments = {
+          "rg",
+          "--color=never",
+          "--no-heading",
+          "--with-filename",
+          "--line-number",
+          "--column",
+          "--smart-case",
+          "--hidden",
+          "--glob=!**/.git/*",
+        },
+
+        preview = {
+          timeout = 100,
+          delay = 0,
+          check_mime_type = true,
+        },
+
+        git = {
+          max_count = 10000,
+        },
+
         mappings = {
           n = { ["q"] = require("telescope.actions").close },
           i = {
@@ -85,16 +167,16 @@ return {
     { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
     { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Find Buffers" },
     { "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Recent Files" },
-    { "<leader>fg", "<cmd>Telescope git_files<CR>", desc = "Git Files" },
 
     { "<leader>FF", "<cmd>Telescope live_grep<CR>", desc = "Live Grep Project" },
     { "<leader>Ff", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Grep Current Buffer" },
 
     { "<leader>fc", "<cmd>Telescope commands<CR>", desc = "Commands" },
     { "<leader>fh", "<cmd>Telescope help_tags<CR>", desc = "Help Tags" },
+    { "<leader>fm", "<cmd>Telescope man_pages<CR>", desc = "Man Pages" },
     { "<leader>fH", "<cmd>Telescope command_history<CR>", desc = "Command History" },
 
-    { "<leader>fm", "<cmd>Telescope marks<CR>", desc = "Marks" },
+    { "<leader>fM", "<cmd>Telescope marks<CR>", desc = "Marks" },
     { "<leader>fs", "<cmd>Telescope spell_suggest<CR>", desc = "Spell Suggest" },
     { "<leader>fq", "<cmd>Telescope quickfix<CR>", desc = "Quickfix List" },
     { "<leader>fl", "<cmd>Telescope loclist<CR>", desc = "Location List" },
