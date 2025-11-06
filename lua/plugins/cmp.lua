@@ -44,12 +44,6 @@ return {
       end,
     },
 
-    {
-      "zbirenbaum/copilot-cmp",
-      config = function()
-        require("copilot_cmp").setup()
-      end,
-    },
     -- cmp sources plugins
     {
       "saadparwaiz1/cmp_luasnip",
@@ -71,6 +65,17 @@ return {
           require("luasnip").lsp_expand(args.body)
         end,
       },
+
+      enabled = function()
+        local disabled_filetypes = { 'copilot-chat', 'TelescopePrompt' }
+        local filetype = vim.bo.filetype
+        for _, disabled_ft in ipairs(disabled_filetypes) do
+          if filetype == disabled_ft then
+            return false
+          end
+        end
+        return true
+      end,
 
       mapping = {
         ["<C-Up>"] = cmp.mapping.select_prev_item(),
@@ -118,7 +123,6 @@ return {
         { name = "nvim_lua" },
         { name = "async_path" },
         { name = "treesitter" },
-        { name = "copilot" },
       },
     }
 

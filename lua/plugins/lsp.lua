@@ -6,7 +6,6 @@ local servers = {
   "eslint",
   "vtsls",
   "jsonls",
-  "tailwindcss",
   "marksman",
   "lua_ls",
   "pyright",
@@ -17,6 +16,7 @@ local servers = {
   "hyprls",
   "clangd",
   "jdtls",
+  "taplo",
 }
 
 return {
@@ -84,7 +84,6 @@ return {
       -- Default configurations for all servers
       vim.lsp.config("*", {
         capabilities = capabilities,
-        root_markers = { ".git" },
       })
 
       -- Server-specific configurations

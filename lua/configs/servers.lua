@@ -39,68 +39,16 @@ function M.setup(capabilities)
     root_markers = { "package.json", "tsconfig.json", "jsconfig.json" },
     capabilities = capabilities,
     settings = {
-      vtsls = {
-        enableMoveToFileCodeAction = true,
-        experimental = {
-          completion = {
-            enableServerSideFuzzyMatch = true,
-            entriesLimit = 128,
-          },
-        },
-      },
       typescript = {
         tsserver = {
           maxTsServerMemory = 2048,
         },
         format = { enable = false },
-        suggest = {
-          completions = {
-            completeFunctionCalls = true,
-          },
-        },
-        inlayHints = {
-          includeInlayParameterNameHints = false,
-          includeInlayFunctionParameterTypeHints = false,
-          includeInlayVariableTypeHints = false,
-          includeInlayPropertyDeclarationTypeHints = false,
-          includeInlayFunctionLikeReturnTypeHints = false,
-          includeInlayEnumMemberValueHints = false,
-        },
-        preferences = {
-          includeCompletionsForModuleExports = true,
-          includeCompletionsWithInsertText = true,
-          importModuleSpecifier = "relative",
-          includePackageJsonAutoImports = "auto",
-          quotePreference = "auto",
-        },
       },
       javascript = {
         format = { enable = false },
-        suggest = {
-          completions = {
-            completeFunctionCalls = true,
-          },
-        },
-        inlayHints = {
-          includeInlayParameterNameHints = false,
-          includeInlayFunctionParameterTypeHints = false,
-          includeInlayVariableTypeHints = false,
-          includeInlayPropertyDeclarationTypeHints = false,
-          includeInlayFunctionLikeReturnTypeHints = false,
-          includeInlayEnumMemberValueHints = false,
-        },
-        preferences = {
-          includeCompletionsForModuleExports = true,
-          includeCompletionsWithInsertText = true,
-          importModuleSpecifier = "relative",
-          includePackageJsonAutoImports = "auto",
-          quotePreference = "auto",
-        },
       },
     },
-    on_attach = function(client)
-      client.server_capabilities.documentFormattingProvider = false
-    end,
   })
 
   -- Java LSP
@@ -243,22 +191,6 @@ function M.setup(capabilities)
     filetypes = { "css", "scss", "sass", "less", "pcss", "typescriptreact", "javascriptreact" },
   })
 
-  -- Tailwind CSS
-  vim.lsp.config("tailwindcss", {
-    capabilities = capabilities,
-    root_markers = {
-      "tailwind.config.js",
-      "tailwind.config.cjs",
-      "tailwind.config.mjs",
-      "tailwind.config.ts",
-      "postcss.config.js",
-      "postcss.config.cjs",
-      "postcss.config.mjs",
-      "postcss.config.ts",
-      "package.json",
-    },
-  })
-
   -- Emmet
   vim.lsp.config("emmet_ls", {
     capabilities = capabilities,
@@ -304,128 +236,18 @@ function M.setup(capabilities)
         },
       },
     },
-    on_attach = function(client, _)
-      -- Reduce diagnostics frequency for better performance
-      client.server_capabilities.documentFormattingProvider = false
-    end,
-  })
-
-  -- Python LSP - optimized
-  vim.lsp.config("pyright", {
-    capabilities = capabilities,
-    root_markers = {
-      "pyproject.toml",
-      "setup.py",
-      "setup.cfg",
-      "requirements.txt",
-      "Pipfile",
-      "pyrightconfig.json",
-    },
-    settings = {
-      python = {
-        analysis = {
-          autoImportCompletions = true,
-          autoSearchPaths = true,
-          diagnosticMode = "openFilesOnly",
-          typeCheckingMode = "basic",
-        },
-      },
-    },
-  })
-
-  -- Rust LSP
-  vim.lsp.config("rust_analyzer", {
-    capabilities = capabilities,
-    root_markers = { "Cargo.toml", "rust-project.json" },
-    settings = {
-      ["rust-analyzer"] = {
-        cargo = {
-          loadOutDirsFromCheck = true,
-          runBuildScripts = true,
-        },
-        procMacro = {
-          enable = true,
-          attributes = {
-            enable = true,
-          },
-        },
-        -- Limit memory usage
-        checkOnSave = {
-          command = "check",
-        },
-      },
-    },
-  })
-
-  -- C/C++ LSP
-  vim.lsp.config("clangd", {
-    capabilities = capabilities,
-    root_markers = {
-      ".clangd",
-      ".clang-tidy",
-      ".clang-format",
-      "compile_commands.json",
-      "compile_flags.txt",
-      "configure.ac",
-    },
-    cmd = {
-      "clangd",
-      "--background-index",
-      "--clang-tidy",
-      "--header-insertion=iwyu",
-      "--completion-style=detailed",
-      "--function-arg-placeholders",
-      "--folding-ranges",
-    },
-  })
-
-  -- HTML LSP
-  vim.lsp.config("html", {
-    capabilities = capabilities,
-    root_markers = { "package.json" },
-    settings = {
-      html = {
-        format = { enable = false },
-        suggest = {
-          element = {
-            wrap = {
-              snippets = {},
-            },
-          },
-        },
-      },
-    },
-  })
-
-  -- JSON LSP
-  vim.lsp.config("jsonls", {
-    capabilities = capabilities,
-    root_markers = { "package.json" },
-    settings = {
-      json = {
-        format = { enable = false },
-        schemas = {},
-        validate = { enable = true },
-      },
-    },
-  })
-
-  -- Markdown LSP
-  vim.lsp.config("marksman", {
-    capabilities = capabilities,
-    root_markers = { ".marksman.toml" },
-  })
-
-  -- XML LSP
-  vim.lsp.config("lemminx", {
-    capabilities = capabilities,
-    root_markers = { "pom.xml" },
   })
 
   -- Hyprland LSP
   vim.lsp.config("hyprls", {
     capabilities = capabilities,
     root_markers = { "hyprland.conf" },
+    filetypes = { "hyprlang" },
+  })
+
+  vim.lsp.config("bashls", {
+    capabilities = capabilities,
+    filetypes = { "bash", "zsh", "sh" },
   })
 end
 
