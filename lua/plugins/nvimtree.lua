@@ -3,7 +3,11 @@ return {
   cmd = { "NvimTreeToggle", "NvimTreeFocus" },
   opts = function()
     return {
-      filters = { dotfiles = false },
+      filters = {
+        dotfiles = false,
+        git_ignored = false,
+        custom = {},
+      },
       disable_netrw = true,
       hijack_cursor = true,
       sync_root_with_cwd = true,
@@ -13,7 +17,6 @@ return {
       },
       view = {
         width = 30,
-        preserve_window_proportions = true,
       },
 
       actions = {
@@ -23,12 +26,12 @@ return {
       },
 
       git = {
-        enable = false,
+        enable = true,
       },
 
       renderer = {
         root_folder_label = false,
-        highlight_git = true,
+        highlight_git = "icon",
         indent_markers = { enable = true },
         icons = {
           glyphs = {
@@ -40,7 +43,15 @@ return {
               open = "",
               symlink = "",
             },
-            git = { unmerged = "" },
+            git = {
+              unstaged = "✗",
+              staged = "✓",
+              unmerged = "",
+              renamed = "➜",
+              untracked = "★",
+              deleted = "󰗨",
+              ignored = "",
+            },
           },
         },
       },

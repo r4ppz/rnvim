@@ -1,11 +1,11 @@
 -- I use arrow keys not hjkl cause I am a fucking weirdo
 
-local map = require "utils.map"
+local map = require("utils.map")
 
 map("n", "<A-t>", function()
-  vim.cmd "enew"
-  vim.cmd "terminal"
-  vim.cmd "startinsert"
+  vim.cmd("enew")
+  vim.cmd("terminal")
+  vim.cmd("startinsert")
 end, { desc = "New Terminal Buffer" })
 
 map("n", "<C-w><S-Left>", "<C-w>H", { desc = "Move split left" })
@@ -22,6 +22,8 @@ map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "Copy whole file" })
 
 map("n", "<leader><Up>", "O", { desc = "Insert above" })
 map("n", "<leader><Down>", "o", { desc = "Insert below" })
+map("n", "<C-M-Up>", "O", { desc = "Insert above" })
+map("n", "<C-M-Down>", "o", { desc = "Insert below" })
 
 map("n", "<leader>,", "u", { desc = "Undo" })
 map("n", "<leader>.", "<C-r>", { desc = "Redo" })
@@ -47,10 +49,10 @@ map("n", "Q", "<Nop>", { desc = "Disable Ex mode (Q)" })
 map({ "n", "v" }, "!", "^", { desc = "Jump to first non-blank character of the line" })
 map({ "n", "v" }, "@", "g_", { desc = "Jump to last non-blank character of line" })
 
-map({ "n", "v" }, "<S-Left>", "B", { desc = "Move to the beginning of the word" })
-map({ "n", "v" }, "<S-Right>", "E", { desc = "Move to the end of the word" })
-map("i", "<S-Left>", "<C-o>B", { desc = "Move to the beginning of the word in insert mode" })
-map("i", "<S-Right>", "<C-o>E", { desc = "Move to the end of the word in insert mode" })
+-- map({ "n", "v" }, "<S-Left>", "B", { desc = "Move to the beginning of the word" })
+-- map({ "n", "v" }, "<S-Right>", "E", { desc = "Move to the end of the word" })
+-- map("i", "<S-Left>", "<C-o>B", { desc = "Move to the beginning of the word in insert mode" })
+-- map("i", "<S-Right>", "<C-o>E", { desc = "Move to the end of the word in insert mode" })
 
 map({ "n", "v" }, "<C-Left>", "b", { desc = "Move to the beginning of the word" })
 map({ "n", "v" }, "<C-Right>", "e", { desc = "Move to the end of the word" })
@@ -106,10 +108,14 @@ map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
 map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
 
 -- NVCHAD
-map("n", "<leader>nc", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
-map("n", "<leader>nt", function()
+map("n", "<leader>vc", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
+map("n", "<leader>vt", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })
+
+-- UI
+map("n", "<leader>um", "<cmd>Mason<CR>", { desc = "Mason UI" })
+map("n", "<leader>ul", "<cmd>Lazy<CR>", { desc = "Lazy UI" })
 
 -- Tabs
 map("n", "<leader>tn", "<cmd>tabnew<CR>", { desc = "New tab" })
@@ -126,13 +132,20 @@ for i, mark in ipairs(marks) do
 end
 
 -- Buffers (tabufline)
-map("n", "<leader>b", "<cmd>enew<CR>", { desc = "Buffer new" })
 
-map({ "n", "v" }, "<leader><Right>", function()
+map("n", "<leader>n", "<cmd>enew<CR>", { desc = "Buffer new" })
+
+map({ "n" }, "<leader><Right>", function()
   require("nvchad.tabufline").next()
 end, { desc = "Buffer goto next" })
+map({ "n" }, "<leader><Left>", function()
+  require("nvchad.tabufline").prev()
+end, { desc = "Buffer goto prev" })
 
-map({ "n", "v" }, "<leader><Left>", function()
+map({ "n" }, "<C-M-Right>", function()
+  require("nvchad.tabufline").next()
+end, { desc = "Buffer goto next" })
+map({ "n" }, "<C-M-Left>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "Buffer goto prev" })
 
@@ -146,16 +159,16 @@ end, { desc = "Close all buffers except current" })
 
 -- Toggleable terminal
 map({ "n", "t" }, "<A-d>", function()
-  require("nvchad.term").toggle {
+  require("nvchad.term").toggle({
     pos = "float",
     id = "generic",
-  }
+  })
 end, { desc = "Toggle generic terminal" })
 
 -- Open selected text as URL (portable)
 local function create_open_url_function()
-  local is_mac = vim.fn.has "mac" == 1
-  local is_win = vim.fn.has "win32" == 1
+  local is_mac = vim.fn.has("mac") == 1
+  local is_win = vim.fn.has("win32") == 1
 
   return function(url)
     url = vim.fn.trim(url or "")
@@ -177,8 +190,8 @@ end
 
 local open_url_portable = create_open_url_function()
 map("v", "gx", function()
-  vim.cmd [[normal! "vy]]
-  local url = vim.fn.getreg '"'
+  vim.cmd([[normal! "vy]])
+  local url = vim.fn.getreg('"')
   open_url_portable(url)
 end, { desc = "Open selected text as URL" })
 

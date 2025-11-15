@@ -38,7 +38,28 @@ return {
         find_files = {
           hidden = true,
           follow_symlinks = false,
-          find_command = { "fd", "--type", "f", "--hidden", "--color", "never" },
+          find_command = {
+            "fd",
+            "--type",
+            "f",
+            "--hidden",
+            "--exclude",
+            ".git",
+            "--exclude",
+            "node_modules",
+            "--exclude",
+            "target",
+            "--exclude",
+            "build",
+            "--exclude",
+            "dist",
+            "--exclude",
+            ".next",
+            "--exclude",
+            ".nuxt",
+            "--color",
+            "never",
+          },
         },
       },
 
@@ -99,30 +120,50 @@ return {
         "--hidden",
         "--glob",
         "!.git/**",
+        "--glob",
+        "!node_modules/**",
+        "--glob",
+        "!target/**",
+        "--glob",
+        "!build/**",
+        "--glob",
+        "!dist/**",
+        "--glob",
+        "!.next/**",
+        "--glob",
+        "!.nuxt/**",
       },
 
       extensions_list = { "themes", "terms", "ui-select" },
       extensions = {
         ["ui-select"] = {
-          require("telescope.themes").get_dropdown {},
+          require("telescope.themes").get_dropdown({}),
+        },
+
+        fzf = {
+          fuzzy_matching = true,
+          override_generic_sorter = true,
+          override_file_sorter = true,
+          case_mode = "smart_case",
         },
       },
     }
   end,
 
   config = function(_, opts)
-    local telescope = require "telescope"
+    local telescope = require("telescope")
     telescope.setup(opts)
 
     for _, ext in ipairs(opts.extensions_list or {}) do
       telescope.load_extension(ext)
     end
+    pcall(telescope.load_extension, "fzf")
   end,
 
   keys = {
     { "<M-f>", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
     { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
-    { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Find Buffers" },
+    { "<leader>bb", "<cmd>Telescope buffers<CR>", desc = "Find Buffers" },
     { "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Recent Files" },
 
     { "<leader>FF", "<cmd>Telescope live_grep<CR>", desc = "Live Grep Project" },
@@ -137,6 +178,6 @@ return {
     { "<leader>fs", "<cmd>Telescope spell_suggest<CR>", desc = "Spell Suggest" },
     { "<leader>fq", "<cmd>Telescope quickfix<CR>", desc = "Quickfix List" },
     { "<leader>fl", "<cmd>Telescope loclist<CR>", desc = "Location List" },
-    { "<leader>fB", "<cmd>Telescope file_browser<CR>", desc = "File Browser" },
+    { "<leader>fb", "<cmd>Telescope file_browser<CR>", desc = "File Browser" },
   },
 }

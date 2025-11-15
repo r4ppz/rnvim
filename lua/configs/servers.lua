@@ -1,5 +1,14 @@
 local M = {}
 
+local function make_lua_library()
+  local lib = {}
+  lib[vim.fn.expand("$VIMRUNTIME/lua")] = true
+  lib[vim.fn.stdpath("data") .. "/lazy/ui/nvchad_types"] = true
+  lib[vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy"] = true
+  lib["${3rd}/luv/library"] = true
+  return lib
+end
+
 function M.setup(capabilities)
   -- Lua LSP
   vim.lsp.config("lua_ls", {
@@ -19,12 +28,7 @@ function M.setup(capabilities)
           version = "LuaJIT",
         },
         workspace = {
-          library = {
-            vim.fn.expand "$VIMRUNTIME/lua",
-            vim.fn.stdpath "data" .. "/lazy/ui/nvchad_types",
-            vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy",
-            "${3rd}/luv/library",
-          },
+          library = make_lua_library(),
           maxPreload = 1000,
           preloadFileSize = 1000,
         },
@@ -52,24 +56,18 @@ function M.setup(capabilities)
   })
 
   -- Java LSP
-  local jdtls_capabilities = vim.deepcopy(capabilities)
-  jdtls_capabilities.textDocument.semanticTokens = vim.NIL
-
+  local java_home = os.getenv("JAVA_HOME")
   vim.lsp.config("jdtls", {
-    capabilities = jdtls_capabilities,
+    capabilities = capabilities,
     root_markers = { "pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "gradlew", "mvnw" },
-    on_attach = function(client)
-      -- Forcefully disable semantic tokens if server ignores capability
-      client.server_capabilities.semanticTokensProvider = nil
-    end,
     settings = {
       java = {
-        home = "/usr/lib/jvm/java-21-openjdk/",
+        home = java_home,
         configuration = {
           runtimes = {
             {
               name = "JavaSE-21",
-              path = "/usr/lib/jvm/java-21-openjdk/",
+              path = java_home,
             },
           },
         },
@@ -127,10 +125,6 @@ function M.setup(capabilities)
         },
         format = {
           enabled = true,
-          settings = {
-            url = vim.fn.stdpath "config" .. "/java-formatter.xml",
-            profile = "GoogleStyle",
-          },
         },
         sources = {
           organizeImports = {
@@ -146,12 +140,18 @@ function M.setup(capabilities)
         },
       },
     },
+    init_options = {
+      bundles = {},
+    },
+    on_attach = function(client)
+      client.server_capabilities.semanticTokensProvider = nil
+    end,
   })
 
   -- CSS Modules
   vim.lsp.config("cssmodules_ls", {
     capabilities = capabilities,
-    filetypes = { "typescriptreact", "javascriptreact", "tsx", "jsx" },
+    filetypes = { "typescriptreact", "javascriptreact" },
     settings = {
       css = {
         validate = true,
@@ -188,7 +188,7 @@ function M.setup(capabilities)
   -- CSS Variables
   vim.lsp.config("css_variables", {
     capabilities = capabilities,
-    filetypes = { "css", "scss", "sass", "less", "pcss", "typescriptreact", "javascriptreact" },
+    filetypes = { "css", "scss", "sass", "less", "typescriptreact", "javascriptreact" },
   })
 
   -- Emmet
@@ -199,9 +199,6 @@ function M.setup(capabilities)
       "javascriptreact",
       "typescriptreact",
       "css",
-      "scss",
-      "vue",
-      "svelte",
     },
   })
 
@@ -225,16 +222,9 @@ function M.setup(capabilities)
         useFlatConfig = true,
       },
       format = false,
-      codeActionOnSave = {
-        mode = "all",
-        disableRuleComment = {
-          enable = true,
-          location = "separateLine",
-        },
-        showDocumentation = {
-          enable = true,
-        },
-      },
+    },
+    flags = {
+      debounce_text_changes = 500,
     },
   })
 

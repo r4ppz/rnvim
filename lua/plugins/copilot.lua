@@ -1,20 +1,22 @@
 return {
   "CopilotC-Nvim/CopilotChat.nvim",
   branch = "main",
-  build = "make tiktoken || true",
+  build = "make tiktoken",
   dependencies = {
     {
       "zbirenbaum/copilot.lua",
       config = function()
-        require("copilot").setup {
+        require("copilot").setup({
           suggestion = { enabled = false },
           panel = { enabled = false },
-          settings = {
-            telemetry = {
-              telemetryLevel = "",
+          server_opts_overrides = {
+            settings = {
+              telemetry = {
+                telemetryLevel = "off",
+              },
             },
           },
-        }
+        })
       end,
     },
     "nvim-lua/plenary.nvim",
@@ -66,8 +68,8 @@ return {
     {
       "<M-v>",
       function()
-        local chat = require "CopilotChat"
-        chat.toggle {
+        local chat = require("CopilotChat")
+        chat.toggle({
           window = {
             layout = "float",
             width = 120,
@@ -77,7 +79,7 @@ return {
             zindex = 100,
           },
           auto_fold = true,
-        }
+        })
       end,
       mode = { "n", "v" },
       desc = "Open copilot in floating window",
@@ -86,7 +88,7 @@ return {
     {
       "<leader>cp",
       function()
-        local chat = require "CopilotChat"
+        local chat = require("CopilotChat")
         chat.open()
         chat.select_prompt()
       end,
@@ -98,7 +100,7 @@ return {
     {
       "<leader>cc",
       function()
-        local chat = require "CopilotChat"
+        local chat = require("CopilotChat")
         chat.open()
         chat.chat:add_message({ role = "user", content = "#buffer\n" }, true)
       end,
@@ -110,7 +112,7 @@ return {
     {
       "<leader>ca",
       function()
-        local chat = require "CopilotChat"
+        local chat = require("CopilotChat")
         chat.open()
         chat.chat:add_message({ role = "user", content = "#buffers\n" }, true)
       end,
@@ -122,12 +124,12 @@ return {
     {
       "<leader>cf",
       function()
-        local builtin = require "telescope.builtin"
-        local actions = require "telescope.actions"
-        local action_state = require "telescope.actions.state"
-        local chat = require "CopilotChat"
+        local builtin = require("telescope.builtin")
+        local actions = require("telescope.actions")
+        local action_state = require("telescope.actions.state")
+        local chat = require("CopilotChat")
 
-        builtin.find_files {
+        builtin.find_files({
           attach_mappings = function(prompt_bufnr, map)
             local run = function()
               local picker = action_state.get_current_picker(prompt_bufnr)
@@ -152,7 +154,7 @@ return {
             map("n", "<CR>", run)
             return true
           end,
-        }
+        })
       end,
       desc = "Pick files with Telescope",
     },
