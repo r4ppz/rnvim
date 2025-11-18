@@ -55,11 +55,11 @@ M.term = {
 }
 
 M.lsp = {
-  signature = true,
+  signature = false,
 }
 
 M.colorify = {
-  enabled = true,
+  enabled = false,
   mode = "virtual",
   virt_text = "󱓻 ",
   highlight = { hex = true, lspvars = true },

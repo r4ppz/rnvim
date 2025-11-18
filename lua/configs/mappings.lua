@@ -22,8 +22,8 @@ map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "Copy whole file" })
 
 map("n", "<leader><Up>", "O", { desc = "Insert above" })
 map("n", "<leader><Down>", "o", { desc = "Insert below" })
-map("n", "<C-M-Up>", "O", { desc = "Insert above" })
-map("n", "<C-M-Down>", "o", { desc = "Insert below" })
+map("n", "<M-Up>", "O", { desc = "Insert above" })
+map("n", "<M-Down>", "o", { desc = "Insert below" })
 
 map("n", "<leader>,", "u", { desc = "Undo" })
 map("n", "<leader>.", "<C-r>", { desc = "Redo" })
@@ -142,18 +142,26 @@ map({ "n" }, "<leader><Left>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "Buffer goto prev" })
 
-map({ "n" }, "<C-M-Right>", function()
+map({ "n" }, "<M-Right>", function()
   require("nvchad.tabufline").next()
 end, { desc = "Buffer goto next" })
-map({ "n" }, "<C-M-Left>", function()
+map({ "n" }, "<M-Left>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "Buffer goto prev" })
+
+map("n", "<M-x>", function()
+  require("nvchad.tabufline").close_buffer()
+end, { desc = "Buffer close" })
 
 map("n", "<leader>x", function()
   require("nvchad.tabufline").close_buffer()
 end, { desc = "Buffer close" })
 
 map("n", "<leader>X", function()
+  require("nvchad.tabufline").closeAllBufs(false)
+end, { desc = "Close all buffers except current" })
+
+map("n", "<S-M-X>", function()
   require("nvchad.tabufline").closeAllBufs(false)
 end, { desc = "Close all buffers except current" })
 

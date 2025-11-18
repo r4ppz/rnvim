@@ -3,25 +3,8 @@ return {
   branch = "main",
   build = "make tiktoken",
   dependencies = {
-    {
-      "zbirenbaum/copilot.lua",
-      config = function()
-        require("copilot").setup({
-          suggestion = { enabled = false },
-          panel = { enabled = false },
-          server_opts_overrides = {
-            settings = {
-              telemetry = {
-                telemetryLevel = "off",
-              },
-            },
-          },
-        })
-      end,
-    },
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
-    "nvim-telescope/telescope-ui-select.nvim",
   },
 
   opts = function()
