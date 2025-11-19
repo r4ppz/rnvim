@@ -37,25 +37,6 @@ function M.setup(capabilities)
     },
   })
 
-  -- NOTE: I use typescript-tools now
-  -- VTS LSP
-  -- vim.lsp.config("vtsls", {
-  --   filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-  --   root_markers = { "package.json", "tsconfig.json", "jsconfig.json" },
-  --   capabilities = capabilities,
-  --   settings = {
-  --     typescript = {
-  --       tsserver = {
-  --         maxTsServerMemory = 2048,
-  --       },
-  --       format = { enable = false },
-  --     },
-  --     javascript = {
-  --       format = { enable = false },
-  --     },
-  --   },
-  -- })
-
   -- Java LSP
   local java_home = os.getenv("JAVA_HOME")
   vim.lsp.config("jdtls", {
@@ -76,6 +57,7 @@ function M.setup(capabilities)
           filteredTypes = { "com.sun.*", "java.awt.*", "jdk.*", "sun.*" },
           importOrder = { "java", "javax", "com", "org", "lombok" },
         },
+        home = java_home,
         configuration = {
           runtimes = {
             {
@@ -97,7 +79,6 @@ function M.setup(capabilities)
             enabled = true,
           },
         },
-        home = "/usr/lib/jvm/java-21-openjdk",
         import = {
           externalAnnotation = {
             enabled = true,
@@ -189,29 +170,6 @@ function M.setup(capabilities)
       "javascriptreact",
       "typescriptreact",
       "css",
-    },
-  })
-
-  -- ESLint
-  vim.lsp.config("eslint", {
-    capabilities = capabilities,
-    root_markers = {
-      ".eslintrc",
-      ".eslintrc.js",
-      ".eslintrc.cjs",
-      ".eslintrc.yaml",
-      ".eslintrc.yml",
-      ".eslintrc.json",
-      "eslint.config.js",
-      "eslint.config.mjs",
-      "eslint.config.cjs",
-      "package.json",
-    },
-    settings = {
-      experimental = {
-        useFlatConfig = true,
-      },
-      format = false,
     },
   })
 
