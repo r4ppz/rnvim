@@ -2,19 +2,11 @@
 
 local map = require("utils.map")
 
-map("n", "<A-t>", function()
-  vim.cmd("enew")
-  vim.cmd("terminal")
-  vim.cmd("startinsert")
-end, { desc = "New Terminal Buffer" })
-
 map("n", "<C-w><S-Left>", "<C-w>H", { desc = "Move split left" })
 map("n", "<C-w><S-Down>", "<C-w>J", { desc = "Move split down" })
 map("n", "<C-w><S-Up>", "<C-w>K", { desc = "Move split up" })
 map("n", "<C-w><S-Right>", "<C-w>L", { desc = "Move split right" })
 
-map("n", "<Tab>", "nzz", { desc = "Next search result centered" })
-map("n", "<S-Tab>", "Nzz", { desc = "Previous search result centered" })
 map("n", "n", "nzz", { desc = "Next search result centered" })
 map("n", "N", "Nzz", { desc = "Previous search result centered" })
 
@@ -87,10 +79,10 @@ map(
   { desc = "Highlight selection (no jump)" }
 )
 
-map("n", "<S-j>", ":resize +2<CR>", { desc = "Increase window height" })
-map("n", "<S-k>", ":resize -2<CR>", { desc = "Decrease window height" })
-map("n", "<S-h>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
-map("n", "<S-l>", ":vertical resize +2<CR>", { desc = "Increase window width" })
+map("n", "<C-M-Down>", ":resize +2<CR>", { desc = "Increase window height" })
+map("n", "<C-M-Up>", ":resize -2<CR>", { desc = "Decrease window height" })
+map("n", "<C-M-Right>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
+map("n", "<C-M-Left>", ":vertical resize +2<CR>", { desc = "Increase window width" })
 
 map("v", "<", "<gv", { desc = "Indent left and reselect" })
 map("v", ">", ">gv", { desc = "Indent right and reselect" })
@@ -123,6 +115,8 @@ map("n", "<leader>tX", "<cmd>tabonly<CR>", { desc = "Close all other tabs" })
 map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close tab" })
 map("n", "<leader>t<Right>", "<cmd>tabnext<CR>", { desc = "Next tab" })
 map("n", "<leader>t<Left>", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
+map("n", "<Tab>", "<cmd>tabnext<CR>", { desc = "Next tab" })
+map("n", "<S-Tab>", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
 
 -- Marks
 local marks = { "A", "B", "C", "D", "E" }
@@ -172,6 +166,28 @@ map({ "n", "t" }, "<A-d>", function()
     id = "generic",
   })
 end, { desc = "Toggle generic terminal" })
+
+map({ "n", "t" }, "<A-s>", function()
+  require("nvchad.term").toggle({
+    pos = "sp",
+    size = 0.5,
+    id = "horizontal",
+  })
+end, { desc = "Toggle generic terminal" })
+
+map({ "n", "t" }, "<A-v>", function()
+  require("nvchad.term").toggle({
+    pos = "vsp",
+    size = 0.5,
+    id = "vertical",
+  })
+end, { desc = "Toggle generic terminal" })
+
+map("n", "<A-t>", function()
+  vim.cmd("enew")
+  vim.cmd("terminal")
+  vim.cmd("startinsert")
+end, { desc = "New Terminal Buffer" })
 
 -- Open selected text as URL (portable)
 local function create_open_url_function()

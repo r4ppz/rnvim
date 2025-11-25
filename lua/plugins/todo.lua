@@ -1,7 +1,7 @@
 return {
   "folke/todo-comments.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
-  event = { "BufReadPre", "BufNewFile" },
+  event = "BufReadPost",
   opts = function()
     return {
       signs = true,
@@ -49,6 +49,5 @@ return {
       end,
       desc = "Previous todo comment",
     },
-    { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find TODOs" },
   },
 }
